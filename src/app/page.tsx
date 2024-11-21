@@ -26,7 +26,7 @@ export default function Home() {
     formData.append('language', language);
 
     try {
-      const response = await axios.post('http://localhost:5000/upload', formData, {
+      const response = await axios.post('https://tts-be-app.onrender.com/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -54,9 +54,11 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        {isLoading ? (<h1 className="text-2xl text-center font-bold mb-4 font-[family-name:var(--font-geist-poppins)] text-slate-900">Your request is being processed....</h1>) : audioUrl ? (<h1 className="text-2xl text-center font-bold mb-4 font-[family-name:var(--font-geist-poppins)] text-slate-900">Listen or Download Audio</h1>) : (<h1 className="text-2xl font-bold mb-4 text-center font-[family-name:var(--font-geist-poppins)] text-slate-900">Upload your PDF/Word Document to Listen to.</h1>)}
+    <div className="flex flex-col items-center justify-center h-600 min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-[600px]">
+        {isLoading ? (<h1 className="text-2xl text-center font-bold mb-4 font-[family-name:var(--font-geist-poppins)] text-slate-900">Your request is being processed....</h1>) : audioUrl ? ((<h1 className="text-2xl text-center font-bold mb-4 font-[family-name:var(--font-geist-poppins)] text-slate-900">Listen or Download Audio</h1>)) : (<div><h1 className="text-2xl font-bold mb-2 text-center font-[family-name:var(--font-geist-poppins)] text-slate-900">Text to Speech App.</h1>
+          <p className='text-black mb-4 text-center font-[family-name:var(--font-geist-poppins)]'>Upload your PDF/Word document and listen to its content.</p>
+        </div>)}
         {isLoading ? (
           <div className="flex justify-center items-center">
             <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -79,9 +81,9 @@ export default function Home() {
             </a>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 mt-3">
             <div>
-              <label className="block text-gray-700 font-[family-name:var(--font-geist-nunito)]">Upload File</label>
+              <label className="block text-gray-700 mt-2 font-[family-name:var(--font-geist-nunito)]">Upload File</label>
               <input
                 type="file"
                 accept=".pdf,.doc,.docx"
