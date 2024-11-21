@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { FcAudioFile } from "react-icons/fc";
+import Link from 'next/link';
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -56,7 +57,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center h-600 min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-[600px]">
-        {isLoading ? (<h1 className="text-2xl text-center font-bold mb-4 font-[family-name:var(--font-geist-poppins)] text-slate-900">Your request is being processed....</h1>) : audioUrl ? ((<h1 className="text-2xl text-center font-bold mb-4 font-[family-name:var(--font-geist-poppins)] text-slate-900">Listen or Download Audio</h1>)) : (<div><h1 className="text-2xl font-bold mb-2 text-center font-[family-name:var(--font-geist-poppins)] text-slate-900">Text to Speech App.</h1>
+        {isLoading ? (<h1 className="text-2xl text-center font-bold mb-4 font-[family-name:var(--font-geist-poppins)] text-slate-900">Your request is being processed....</h1>) : audioUrl ? ((<h1 className="text-2xl text-center font-bold mb-4 font-[family-name:var(--font-geist-poppins)] text-slate-900">Listen or Download Audio</h1>)) : (<div><h1 className="text-2xl font-bold mb-2 text-center font-[family-name:var(--font-geist-poppins)] text-slate-900">Text to Speech Web App.</h1>
           <p className='text-black mb-4 text-center font-[family-name:var(--font-geist-poppins)]'>Upload your PDF/Word document and listen to its content.</p>
         </div>)}
         {isLoading ? (
@@ -123,6 +124,10 @@ export default function Home() {
           </form>
         )}
       </div>
+      <Link href="https://www.juliusolajumoke.com" legacyBehavior>
+        <a className="text-blue-500 mt-4 font-[family-name:var(--font-geist-poppins)] hover:underline">&copy; Julius Olajumoke</a>
+      </Link>
+      {/* <p className="text-center text-black mt-4 text-[18px] font-[family-name:var(--font-geist-poppins)] font-[500]">&copy; Julius Olajumoke</p> */}
     </div>
   );
 }
