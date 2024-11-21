@@ -59,8 +59,8 @@ const geistNunito = Nunito({
 
 
 export const metadata: Metadata = {
-  title: "Create Next App",
-  description: "Convert your PDF to audio clips",
+  title: "Text to Speech Web App",
+  description: "A simple web app that converts text from a PDF/Word document into a speech. You can listen or download the audio file. ",
 };
 
 export default function RootLayout({
