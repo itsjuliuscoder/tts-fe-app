@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { FcAudioFile } from "react-icons/fc";
 import Link from 'next/link';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -17,7 +19,8 @@ export default function Home() {
     console.log({ file, language });
 
     if (!file || !language) {
-      alert('Please select a file and a language');
+      //alert('Please select a file and a language');
+      toast.error('Upload a file & Select a language to proceed', { position: 'top-right' });
       setIsLoading(false);
       return;
     }
@@ -123,6 +126,7 @@ export default function Home() {
             </div>
           </form>
         )}
+        <ToastContainer />
       </div>
       <Link href="https://www.juliusolajumoke.com" legacyBehavior>
         <a className="text-blue-500 mt-4 font-[family-name:var(--font-geist-poppins)] hover:underline">&copy; Julius Olajumoke</a>
