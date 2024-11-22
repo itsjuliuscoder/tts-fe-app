@@ -5,23 +5,28 @@ import { FcAudioFile } from "react-icons/fc";
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css'; // Import default styles
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
   const [language, setLanguage] = useState<string>('');
   const [fileDetails, setFileDetails] = useState<{ name: string; size: number } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
+    setProgress(0);
+    NProgress.start();
     console.log({ file, language });
 
     if (!file || !language) {
-      //alert('Please select a file and a language');
-      toast.error('Upload a file & Select a language to proceed', { position: 'top-right' });
+      toast.error('Something went wrong!', { position: 'top-right' });
       setIsLoading(false);
+      NProgress.done();
       return;
     }
 
@@ -30,11 +35,23 @@ export default function Home() {
     formData.append('language', language);
 
     try {
-      const response = await axios.post('https://tts-be-app.onrender.com/upload', formData, {
+      const response = await axios.post('http://localhost:5000/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
         responseType: 'blob', // Ensure the response is treated as a blob
+        onUploadProgress: (progressEvent) => {
+          const total = progressEvent.total ?? 0;
+          const current = progressEvent.loaded;
+          setProgress(Math.round((current / total) * 50)); // Upload progress (50%)
+          NProgress.set(current / total * 0.5); // Upload progress (50%)
+        },
+        onDownloadProgress: (progressEvent) => {
+          const total = progressEvent.total ?? 0;
+          const current = progressEvent.loaded;
+          setProgress(50 + Math.round((current / total) * 50)); // Download progress (50%)
+          NProgress.set(0.5 + (current / total * 0.5)); // Download progress (50%)
+        },
       });
       const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
       const audioUrl = URL.createObjectURL(audioBlob);
@@ -46,6 +63,7 @@ export default function Home() {
       // Handle error response
     } finally {
       setIsLoading(false);
+      NProgress.done();
     }
   };
 
@@ -58,17 +76,14 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-600 min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-[600px]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         {isLoading ? (<h1 className="text-2xl text-center font-bold mb-4 font-[family-name:var(--font-geist-poppins)] text-slate-900">Your request is being processed....</h1>) : audioUrl ? ((<h1 className="text-2xl text-center font-bold mb-4 font-[family-name:var(--font-geist-poppins)] text-slate-900">Listen or Download Audio</h1>)) : (<div><h1 className="text-2xl font-bold mb-2 text-center font-[family-name:var(--font-geist-poppins)] text-slate-900">Text to Speech Web App.</h1>
           <p className='text-black mb-4 text-center font-[family-name:var(--font-geist-poppins)]'>Upload your PDF/Word document and listen to its content.</p>
         </div>)}
         {isLoading ? (
-          <div className="flex justify-center items-center">
-            <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-            </svg>
+          <div className="w-full bg-gray-200 rounded-full h-6 mb-4">
+            <div className="bg-blue-600 h-6 text-center font-[family-name:var(--font-geist-poppins)] rounded-full" style={{ width: `${progress}%` }}>{`${progress}%`}</div>
           </div>
         ) : audioUrl ? (
           <div className="mt-4">
@@ -85,9 +100,9 @@ export default function Home() {
             </a>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4 mt-3">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-gray-700 mt-2 font-[family-name:var(--font-geist-nunito)]">Upload File</label>
+            <label className="block text-gray-700 mt-2 font-[family-name:var(--font-geist-nunito)]">Upload File</label>
               <input
                 type="file"
                 accept=".pdf,.doc,.docx"
@@ -102,7 +117,7 @@ export default function Home() {
               )}
             </div>
             <div>
-              <label className="block text-gray-700">Select Language</label>
+              <label className="block text-gray-700 font-[family-name:var(--font-geist-nunito)]">Select Language</label>
               <select
                 value={language}
                 onChange={(event) => setLanguage(event.target.value)}
@@ -126,12 +141,11 @@ export default function Home() {
             </div>
           </form>
         )}
-        <ToastContainer />
       </div>
+      <ToastContainer />
       <Link href="https://www.juliusolajumoke.com" legacyBehavior>
         <a className="text-blue-500 mt-4 font-[family-name:var(--font-geist-poppins)] hover:underline">&copy; Julius Olajumoke</a>
       </Link>
-      {/* <p className="text-center text-black mt-4 text-[18px] font-[family-name:var(--font-geist-poppins)] font-[500]">&copy; Julius Olajumoke</p> */}
     </div>
   );
 }
