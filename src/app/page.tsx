@@ -35,7 +35,7 @@ export default function Home() {
     formData.append('language', language);
 
     try {
-      const response = await axios.post('http://localhost:5000/upload', formData, {
+      const response = await axios.post('https://tts-be-app.onrender.com/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
