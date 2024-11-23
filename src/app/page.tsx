@@ -24,7 +24,7 @@ export default function Home() {
     console.log({ file, language });
 
     if (!file || !language) {
-      toast.error('Something went wrong!', { position: 'top-right' });
+      toast.error('Please upload a file and choose a language', { position: 'top-right' });
       setIsLoading(false);
       NProgress.done();
       return;
